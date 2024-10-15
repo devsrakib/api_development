@@ -3,41 +3,86 @@ from myapp.serializers import ContactSerializer
 from rest_framework import status
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
+from rest_framework.views import APIView
+from django.http import Http404
+from rest_framework.mixins import (
+    ListModelMixin,
+    CreateModelMixin,
+    RetrieveModelMixin,
+    UpdateModelMixin,
+    DestroyModelMixin,
+)
+from rest_framework.generics import GenericAPIView
 
 
 # Create your views here.
-@api_view(["GET", "POST"])
-def contact_list(request):
-    if request.method == "GET":
-        Mvar = Contact.objects.all()
-        serializer = ContactSerializer(Mvar, many=True)
-        return Response(serializer.data)
-    elif request.method == "POST":
-        serializer = ContactSerializer(data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+class contactList(ListModelMixin, CreateModelMixin, GenericAPIView):
+    queryset = Contact.objects.all()
+    serializer_class = ContactSerializer
+
+    def get(self, request, *args, **kwargs):
+        return self.list(request, *args, **kwargs)
+
+    def post(self, request, *args, **kwargs):
+        return self.create(request, *args, **kwargs)
 
 
-@api_view(["GET", "PUT", "DELETE"])
-def contact_detail(request, pk):
-    try:
-        dvar = Contact.objects.get(pk=pk)
-    except dvar.DoesNotExist:
-        return Response(status=status.HTTP_400_BAD_REQUEST)
+class contactDetails(
+    RetrieveModelMixin, UpdateModelMixin, DestroyModelMixin, GenericAPIView
+):
+    queryset = Contact.objects.all()
+    serializer_class = ContactSerializer
 
-    if request.method == "GET":
-        serializer = ContactSerializer(dvar)
-        return Response(serializer.data)
+    def get(self, request, *args, **kwargs):
+        return self.retrieve(request, *args, **kwargs)
 
-    elif request.method == "PUT":
-        serializer = ContactSerializer(dvar, data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    def put(self, request, *args, **kwargs):
+        return self.update(request, *args, **kwargs)
 
-    elif request.method == "DELETE":
-        Contact.delete()
-        return Response(status=status.HTTP_204_NO_CONTENT)
+    def delete(self, request, *args, **kwargs):
+        return self.destroy(request, *args, **kwargs)
+
+
+# class contactlist(APIView):
+
+#     def get(self, request, format=None):
+#         Mvar = Contact.objects.all()
+#         serializer = ContactSerializer(Mvar, many=True)
+#         return Response(serializer.data)
+
+#     def post(self, request, format=None):
+#         serializer = ContactSerializer(data=request.data)
+#         if serializer.is_valid():
+#             serializer.save()
+#             return Response(serializer.data, status=status.HTTP_201_CREATED)
+#         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+# class contactDetail(APIView):
+#     """
+#     Retrieve, update or delete a snippet instance.
+#     """
+
+#     def get_object(self, pk):
+#         try:
+#             return Contact.objects.get(pk=pk)
+#         except Contact.DoesNotExist:
+#             raise Http404
+
+#     def get(self, request, pk, format=None):
+#         snippet = self.get_object(pk)
+#         serializer = ContactSerializer(snippet)
+#         return Response(serializer.data)
+
+#     def put(self, request, pk, format=None):
+#         snippet = self.get_object(pk)
+#         serializer = ContactSerializer(snippet, data=request.data)
+#         if serializer.is_valid():
+#             serializer.save()
+#             return Response(serializer.data)
+#         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+#     def delete(self, request, pk, format=None):
+#         snippet = self.get_object(pk)
+#         snippet.delete()
+#         return Response(status=status.HTTP_204_NO_CONTENT)
