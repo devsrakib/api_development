@@ -78,8 +78,12 @@ WSGI_APPLICATION = "apiproject.wsgi.application"
 
 DATABASES = {
     "default": {
-        "ENGINE": "django.db.backends.sqlite3",
-        "NAME": BASE_DIR / "db.sqlite3",
+        "ENGINE": "django.db.backends.postgresql",
+        # "NAME": BASE_DIR / "db.sqlite3",
+        "NAME": "eBook",
+        "USER": "postgres",
+        "PASSWORD": "password",
+        "HOST": "localhost",
     }
 }
 
