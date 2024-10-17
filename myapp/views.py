@@ -77,21 +77,87 @@ from .serializers import (
     SupplierSerializer,
     TodaySellSerializer,
 )
+from myapp.pagination import CustomerPagination, OwnerPagination
+from rest_framework.mixins import (
+    ListModelMixin,
+    CreateModelMixin,
+    UpdateModelMixin,
+    DestroyModelMixin,
+)
 
 
-class OwnerListCreateView(generics.ListCreateAPIView):
+class OwnerCreateView(ListModelMixin, CreateModelMixin, generics.GenericAPIView):
     queryset = Owner.objects.all()
     serializer_class = OwnerSerializer
+    pagination_class = OwnerPagination
+
+    def get(self, request, *args, **kwargs):
+        return self.list(request, *args, **kwargs)
+
+    def post(self, request, *args, **kwargs):
+        return self.create(request, *args, **kwargs)
 
 
-class CustomerListCreateView(generics.ListCreateAPIView):
+class OwnerList(generics.GenericAPIView, ListModelMixin):
+    queryset = Owner.objects.all()
+    serializer_class = OwnerSerializer
+    pagination_class = OwnerPagination
+
+    def get(self, request, *args, **kwargs):
+        return self.list(request, *args, **kwargs)
+
+
+class OwnerDetailView(UpdateModelMixin, generics.ListAPIView):
+    serializer_class = OwnerSerializer
+    lookup_field = "id"
+
+    def get_queryset(self):
+        id = self.kwargs["id"]
+        return Owner.objects.filter(id=id)
+
+    def put(self, request, *args, **kwargs):
+        return self.update(request, *args, **kwargs)
+
+
+class DeleteOwner(DestroyModelMixin, generics.GenericAPIView):
+    queryset = Owner.objects.all()
+    serializer_class = OwnerSerializer
+    lookup_field = "id"
+
+    def delete(self, request, *args, **kwargs):
+        return self.destroy(request, *args, **kwargs)
+
+
+class CustomerListCreateView(generics.GenericAPIView, ListModelMixin, CreateModelMixin):
     queryset = Customer.objects.all()
     serializer_class = CustomerSerializer
+    pagination_class = CustomerPagination
+
+    def get(self, request, *args, **kwargs):
+        return self.list(request, *args, **kwargs)
+
+    def post(self, request, *args, **kwargs):
+        return self.create(request, *args, **kwargs)
 
 
-class SupplierListCreateView(generics.ListCreateAPIView):
+class CustomerByOwnerView(generics.ListAPIView):
+    serializer_class = CustomerSerializer
+    pagination_class = CustomerPagination
+
+    def get_queryset(self):
+        owner_id = self.kwargs["owner_id"]
+        return Customer.objects.filter(owner=owner_id)
+
+
+class SupplierListCreateView(ListModelMixin, CreateModelMixin, generics.GenericAPIView):
     queryset = Supplier.objects.all()
     serializer_class = SupplierSerializer
+
+    def get(self, request, *args, **kwargs):
+        return self.list(request, *args, **kwargs)
+
+    def post(self, request, *args, **kwargs):
+        return self.create(request, *args, **kwargs)
 
 
 class TodaySellListCreateView(generics.ListCreateAPIView):

@@ -4,7 +4,22 @@ from rest_framework.urlpatterns import format_suffix_patterns
 
 urlpatterns = format_suffix_patterns(
     [
-        path("owners/", views.OwnerListCreateView.as_view(), name="owner-list-create"),
+        path(
+            "owners/create/",
+            views.OwnerCreateView.as_view(),
+            name="owner-list-create",
+        ),
+        path("owners/", views.OwnerList.as_view(), name="owner-list"),
+        path(
+            "ownerUpdateById/<uuid:id>/",
+            views.OwnerDetailView.as_view(),
+            name="owner-update",
+        ),
+        path(
+            "deleteOwner/<uuid:id>/",
+            views.DeleteOwner.as_view(),
+            name="owner-delete",
+        ),
         path(
             "customers/",
             views.CustomerListCreateView.as_view(),
@@ -14,6 +29,11 @@ urlpatterns = format_suffix_patterns(
             "customers/<uuid:id>/",
             views.CustomerDetailView.as_view(),
             name="customer-detail",
+        ),
+        path(
+            "getCustomerByOwnerId/<owner_id>/",
+            views.CustomerByOwnerView.as_view(),
+            name="customers-by-owner",
         ),
         path(
             "suppliers/",

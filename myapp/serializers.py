@@ -5,19 +5,20 @@ from .models import Owner, Customer, Supplier, TodaySell
 class OwnerSerializer(serializers.ModelSerializer):
     class Meta:
         model = Owner
-        fields = ["id", "name", "email", "phone", "photo"]
+        fields = ["id", "name", "email", "phone", "profile_photo"]
 
 
 class CustomerSerializer(serializers.ModelSerializer):
+
     class Meta:
         model = Customer
-        fields = ["id", "customerName", "email", "owner"]
+        fields = ["id", "customerName", "email", "profile_photo", "owner"]
 
 
 class SupplierSerializer(serializers.ModelSerializer):
     class Meta:
         model = Supplier
-        fields = ["id", "name", "email", "owner"]
+        fields = ["id", "name", "email", "profile_photo", "owner"]
 
 
 class TodaySellSerializer(serializers.ModelSerializer):
