@@ -1,168 +1,52 @@
-# from django.urls import reverse
-# from myapp.models import Contact
-# from myapp.serializers import ContactSerializer
-# from rest_framework import status
-# from rest_framework.decorators import api_view
-# from rest_framework.response import Response
-# from rest_framework.views import APIView
-# from django.http import Http404
-# from rest_framework.mixins import (
-#     ListModelMixin,
-#     CreateModelMixin,
-#     RetrieveModelMixin,
-#     UpdateModelMixin,
-#     DestroyModelMixin,
-# )
-# from rest_framework.generics import GenericAPIView
-# from rest_framework.authentication import (
-#     SessionAuthentication,
-#     BasicAuthentication,
-#     TokenAuthentication,
-# )
-# from rest_framework.permissions import IsAuthenticated
-# from rest_framework import renderers
-
-
-# # Create your views here.
-# class contactList(ListModelMixin, CreateModelMixin, GenericAPIView):
-#     queryset = Contact.objects.all()
-#     serializer_class = ContactSerializer
-#     renderer_classes = [renderers.StaticHTMLRenderer]
-
-#     # authentication_classes = [SessionAuthentication, BasicAuthentication]
-#     authentication_classes = [TokenAuthentication]
-#     permission_classes = [IsAuthenticated]
-
-#     def get(self, request, *args, **kwargs):
-#         return self.list(request, *args, **kwargs)
-
-#     def post(self, request, *args, **kwargs):
-#         return self.create(request, *args, **kwargs)
-
-
-# class contactDetails(
-#     RetrieveModelMixin, UpdateModelMixin, DestroyModelMixin, GenericAPIView
-# ):
-#     queryset = Contact.objects.all()
-#     serializer_class = ContactSerializer
-#     lookup_field = "pk"
-#     # authentication_classes = [SessionAuthentication, BasicAuthentication]
-#     authentication_classes = [TokenAuthentication]
-#     permission_classes = [IsAuthenticated]
-
-#     def get(self, request, *args, **kwargs):
-#         return self.retrieve(request, *args, **kwargs)
-
-#     def put(self, request, *args, **kwargs):
-#         return self.update(request, *args, **kwargs)
-
-#     def delete(self, request, *args, **kwargs):
-#         return self.destroy(request, *args, **kwargs)
-
-
-# class api_root(APIView):
-#     def get(self, request, *args, **kwargs):
-#         return Response(
-#             {
-#                 "contacts": reverse("contact-list", request=request),
-#             }
-#         )
-
-
 from rest_framework import generics
-from .models import Owner, Customer, Supplier, TodaySell
+from .models import (
+    Owner,
+    Customer,
+    Supplier,
+    CashSell,
+    CashBuy,
+    Transaction,
+    LendGiven,
+    BorrowTaken,
+    Deposit,
+    Expense,
+    MatchCashBox,
+    Withdraw,
+    CollectionReminder,
+)
 from .serializers import (
     OwnerSerializer,
     CustomerSerializer,
     SupplierSerializer,
-    TodaySellSerializer,
-)
-from myapp.pagination import CustomerPagination, OwnerPagination
-from rest_framework.mixins import (
-    ListModelMixin,
-    CreateModelMixin,
-    UpdateModelMixin,
-    DestroyModelMixin,
+    CashSellSerializer,
+    CashBuySerializer,
+    TransactionSerializer,
+    LendGivenSerializer,
+    BorrowTakenSerializer,
+    DepositSerializer,
+    ExpenseSerializer,
+    MatchCashBoxSerializer,
+    WithdrawSerializer,
+    CollectionReminderSerializer,
 )
 
 
-class OwnerCreateView(ListModelMixin, CreateModelMixin, generics.GenericAPIView):
+# Owner Views
+class OwnerListCreateView(generics.ListCreateAPIView):
     queryset = Owner.objects.all()
     serializer_class = OwnerSerializer
-    pagination_class = OwnerPagination
-
-    def get(self, request, *args, **kwargs):
-        return self.list(request, *args, **kwargs)
-
-    def post(self, request, *args, **kwargs):
-        return self.create(request, *args, **kwargs)
 
 
-class OwnerList(generics.GenericAPIView, ListModelMixin):
-    queryset = Owner.objects.all()
-    serializer_class = OwnerSerializer
-    pagination_class = OwnerPagination
-
-    def get(self, request, *args, **kwargs):
-        return self.list(request, *args, **kwargs)
-
-
-class OwnerDetailView(UpdateModelMixin, generics.ListAPIView):
-    serializer_class = OwnerSerializer
-    lookup_field = "id"
-
-    def get_queryset(self):
-        id = self.kwargs["id"]
-        return Owner.objects.filter(id=id)
-
-    def put(self, request, *args, **kwargs):
-        return self.update(request, *args, **kwargs)
-
-
-class DeleteOwner(DestroyModelMixin, generics.GenericAPIView):
+class OwnerDetailView(generics.RetrieveUpdateDestroyAPIView):
     queryset = Owner.objects.all()
     serializer_class = OwnerSerializer
     lookup_field = "id"
 
-    def delete(self, request, *args, **kwargs):
-        return self.destroy(request, *args, **kwargs)
 
-
-class CustomerListCreateView(generics.GenericAPIView, ListModelMixin, CreateModelMixin):
+# Customer Views
+class CustomerListCreateView(generics.ListCreateAPIView):
     queryset = Customer.objects.all()
     serializer_class = CustomerSerializer
-    pagination_class = CustomerPagination
-
-    def get(self, request, *args, **kwargs):
-        return self.list(request, *args, **kwargs)
-
-    def post(self, request, *args, **kwargs):
-        return self.create(request, *args, **kwargs)
-
-
-class CustomerByOwnerView(generics.ListAPIView):
-    serializer_class = CustomerSerializer
-    pagination_class = CustomerPagination
-
-    def get_queryset(self):
-        owner_id = self.kwargs["owner_id"]
-        return Customer.objects.filter(owner=owner_id)
-
-
-class SupplierListCreateView(ListModelMixin, CreateModelMixin, generics.GenericAPIView):
-    queryset = Supplier.objects.all()
-    serializer_class = SupplierSerializer
-
-    def get(self, request, *args, **kwargs):
-        return self.list(request, *args, **kwargs)
-
-    def post(self, request, *args, **kwargs):
-        return self.create(request, *args, **kwargs)
-
-
-class TodaySellListCreateView(generics.ListCreateAPIView):
-    queryset = TodaySell.objects.all()
-    serializer_class = TodaySellSerializer
 
 
 class CustomerDetailView(generics.RetrieveUpdateDestroyAPIView):
@@ -171,13 +55,133 @@ class CustomerDetailView(generics.RetrieveUpdateDestroyAPIView):
     lookup_field = "id"
 
 
+# Supplier Views
+class SupplierListCreateView(generics.ListCreateAPIView):
+    queryset = Supplier.objects.all()
+    serializer_class = SupplierSerializer
+
+
 class SupplierDetailView(generics.RetrieveUpdateDestroyAPIView):
     queryset = Supplier.objects.all()
     serializer_class = SupplierSerializer
     lookup_field = "id"
 
 
-class TodaySellDetailView(generics.RetrieveUpdateDestroyAPIView):
-    queryset = TodaySell.objects.all()
-    serializer_class = TodaySellSerializer
+# Cash Sell Views
+class CashSellListCreateView(generics.ListCreateAPIView):
+    queryset = CashSell.objects.all()
+    serializer_class = CashSellSerializer
+
+
+class CashSellDetailView(generics.RetrieveUpdateDestroyAPIView):
+    queryset = CashSell.objects.all()
+    serializer_class = CashSellSerializer
+    lookup_field = "id"
+
+
+# Cash Buy Views
+class CashBuyListCreateView(generics.ListCreateAPIView):
+    queryset = CashBuy.objects.all()
+    serializer_class = CashBuySerializer
+
+
+class CashBuyDetailView(generics.RetrieveUpdateDestroyAPIView):
+    queryset = CashBuy.objects.all()
+    serializer_class = CashBuySerializer
+    lookup_field = "id"
+
+
+# Transaction Views
+class TransactionListCreateView(generics.ListCreateAPIView):
+    queryset = Transaction.objects.all()
+    serializer_class = TransactionSerializer
+
+
+class TransactionDetailView(generics.RetrieveUpdateDestroyAPIView):
+    queryset = Transaction.objects.all()
+    serializer_class = TransactionSerializer
+    lookup_field = "id"
+
+
+# Lend Given Views
+class LendGivenListCreateView(generics.ListCreateAPIView):
+    queryset = LendGiven.objects.all()
+    serializer_class = LendGivenSerializer
+
+
+class LendGivenDetailView(generics.RetrieveUpdateDestroyAPIView):
+    queryset = LendGiven.objects.all()
+    serializer_class = LendGivenSerializer
+    lookup_field = "id"
+
+
+# Borrow Taken Views
+class BorrowTakenListCreateView(generics.ListCreateAPIView):
+    queryset = BorrowTaken.objects.all()
+    serializer_class = BorrowTakenSerializer
+
+
+class BorrowTakenDetailView(generics.RetrieveUpdateDestroyAPIView):
+    queryset = BorrowTaken.objects.all()
+    serializer_class = BorrowTakenSerializer
+    lookup_field = "id"
+
+
+# Deposit Views
+class DepositListCreateView(generics.ListCreateAPIView):
+    queryset = Deposit.objects.all()
+    serializer_class = DepositSerializer
+
+
+class DepositDetailView(generics.RetrieveUpdateDestroyAPIView):
+    queryset = Deposit.objects.all()
+    serializer_class = DepositSerializer
+    lookup_field = "id"
+
+
+# Expense Views
+class ExpenseListCreateView(generics.ListCreateAPIView):
+    queryset = Expense.objects.all()
+    serializer_class = ExpenseSerializer
+
+
+class ExpenseDetailView(generics.RetrieveUpdateDestroyAPIView):
+    queryset = Expense.objects.all()
+    serializer_class = ExpenseSerializer
+    lookup_field = "id"
+
+
+# Match Cash Box Views
+class MatchCashBoxListCreateView(generics.ListCreateAPIView):
+    queryset = MatchCashBox.objects.all()
+    serializer_class = MatchCashBoxSerializer
+
+
+class MatchCashBoxDetailView(generics.RetrieveUpdateDestroyAPIView):
+    queryset = MatchCashBox.objects.all()
+    serializer_class = MatchCashBoxSerializer
+    lookup_field = "id"
+
+
+# Withdraw Views
+class WithdrawListCreateView(generics.ListCreateAPIView):
+    queryset = Withdraw.objects.all()
+    serializer_class = WithdrawSerializer
+
+
+class WithdrawDetailView(generics.RetrieveUpdateDestroyAPIView):
+    queryset = Withdraw.objects.all()
+    serializer_class = WithdrawSerializer
+    lookup_field = "id"
+
+
+# Collection Reminder Views
+class CollectionReminderListCreateView(generics.ListCreateAPIView):
+    queryset = CollectionReminder.objects.all()
+    serializer_class = CollectionReminderSerializer
+
+
+class CollectionReminderDetailView(generics.RetrieveUpdateDestroyAPIView):
+    queryset = CollectionReminder.objects.all()
+    serializer_class = CollectionReminderSerializer
     lookup_field = "id"
