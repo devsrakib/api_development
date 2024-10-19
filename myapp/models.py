@@ -8,9 +8,9 @@ class Owner(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     name = models.CharField(max_length=100)
     email = models.EmailField(unique=True)
-    phone = models.CharField(max_length=15)
+    phone = models.CharField(max_length=15, blank=True)
     profile_photo = models.ImageField(upload_to="photos/", blank=True, null=True)
-    createAt = models.DateTimeField(default=timezone.now)  # Fix here
+    createdAt = models.DateTimeField(default=timezone.now)  # Fix here
 
     def __str__(self):
         return self.name
@@ -22,10 +22,10 @@ class Customer(models.Model):
     name = models.CharField(max_length=100)
     email = models.EmailField(unique=True)
     phone = models.CharField(
-        max_length=11, blank=False, null=False
+        max_length=11, blank=True
     )  # Make nullable or provide a default
     profile_photo = models.ImageField(upload_to="photos/", blank=True, null=True)
-    createAt = models.DateTimeField(default=timezone.now)  # Fix here
+    createdAt = models.DateTimeField(default=timezone.now)  # Fix here
     owner = models.ForeignKey(Owner, related_name="customers", on_delete=models.CASCADE)
 
     def __str__(self):
@@ -38,10 +38,10 @@ class Supplier(models.Model):
     name = models.CharField(max_length=100)
     email = models.EmailField(unique=True, max_length=50)
     phone = models.CharField(
-        max_length=11, blank=False, null=False
+        max_length=11, blank=True
     )  # Make nullable or provide a default
     profile_photo = models.ImageField(upload_to="photos/", blank=True, null=True)
-    createAt = models.DateTimeField(default=timezone.now)  # Fix here
+    createdAt = models.DateTimeField(default=timezone.now)  # Fix here
     owner = models.ForeignKey(Owner, related_name="suppliers", on_delete=models.CASCADE)
 
     def __str__(self):
@@ -54,7 +54,7 @@ class CashSell(models.Model):
     sell_amount = models.BigIntegerField(null=False, blank=False)
     collected_amount = models.BigIntegerField(blank=False, null=False)
     description = models.CharField(max_length=500, blank=True, null=True)
-    createAt = models.DateTimeField(default=timezone.now)  # Fix here
+    createdAt = models.DateTimeField(default=timezone.now)  # Fix here
     customer = models.ForeignKey(
         Customer, related_name="cash_sells", on_delete=models.CASCADE
     )
@@ -69,7 +69,7 @@ class CashBuy(models.Model):
     sell_amount = models.BigIntegerField(null=False, blank=False)
     collected_amount = models.BigIntegerField(blank=False, null=False)
     description = models.CharField(max_length=500, blank=True, null=True)
-    createAt = models.DateTimeField(default=timezone.now)  # Fix here
+    createdAt = models.DateTimeField(default=timezone.now)  # Fix here
     supplier = models.ForeignKey(
         Supplier, related_name="cash_buys", on_delete=models.CASCADE
     )
@@ -84,7 +84,7 @@ class Transaction(models.Model):
     due = models.BigIntegerField(null=False, blank=False)
     extra_amount = models.BigIntegerField(null=False, blank=False)
     description = models.CharField(max_length=500, blank=True, null=True)
-    createAt = models.DateTimeField(default=timezone.now)  # Fix here
+    createdAt = models.DateTimeField(default=timezone.now)  # Fix here
     cash_sell = models.ForeignKey(
         CashSell,
         related_name="transactions",
@@ -108,7 +108,7 @@ class Transaction(models.Model):
 class LendGiven(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     amount = models.BigIntegerField(blank=False)
-    createAt = models.DateTimeField(default=timezone.now)  # Fix here
+    createdAt = models.DateTimeField(default=timezone.now)  # Fix here
     description = models.CharField(max_length=500, blank=True)
     customer = models.ForeignKey(
         Customer, related_name="lends_given", on_delete=models.CASCADE
@@ -122,7 +122,7 @@ class LendGiven(models.Model):
 class BorrowTaken(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     amount = models.BigIntegerField(blank=False)
-    createAt = models.DateTimeField(default=timezone.now)  # Fix here
+    createdAt = models.DateTimeField(default=timezone.now)  # Fix here
     description = models.CharField(max_length=500, blank=True)
     customer = models.ForeignKey(
         Customer, related_name="borrows_taken", on_delete=models.CASCADE
@@ -136,7 +136,7 @@ class BorrowTaken(models.Model):
 class Deposit(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     amount = models.BigIntegerField(blank=False)
-    createAt = models.DateTimeField(default=timezone.now)  # Fix here
+    createdAt = models.DateTimeField(default=timezone.now)  # Fix here
     description = models.CharField(max_length=500, blank=True)
     owner = models.ForeignKey(Owner, related_name="deposits", on_delete=models.CASCADE)
 
@@ -148,7 +148,7 @@ class Deposit(models.Model):
 class Expense(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     amount = models.BigIntegerField(blank=False)
-    createAt = models.DateTimeField(default=timezone.now)  # Fix here
+    createdAt = models.DateTimeField(default=timezone.now)  # Fix here
     owner = models.ForeignKey(Owner, related_name="expenses", on_delete=models.CASCADE)
 
     def __str__(self):
@@ -159,7 +159,7 @@ class Expense(models.Model):
 class MatchCashBox(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     total_amount = models.BigIntegerField(blank=False)
-    createAt = models.DateTimeField(default=timezone.now)  # Fix here
+    createdAt = models.DateTimeField(default=timezone.now)  # Fix here
     owner = models.ForeignKey(
         Owner, related_name="match_cash_boxes", on_delete=models.CASCADE
     )
@@ -172,7 +172,7 @@ class MatchCashBox(models.Model):
 class Withdraw(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     amount = models.BigIntegerField(blank=False)
-    createAt = models.DateTimeField(default=timezone.now)  # Fix here
+    createdAt = models.DateTimeField(default=timezone.now)  # Fix here
     description = models.CharField(max_length=500, blank=True)
     owner = models.ForeignKey(Owner, related_name="withdraws", on_delete=models.CASCADE)
 
@@ -184,17 +184,10 @@ class Withdraw(models.Model):
 class CollectionReminder(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     collection_date = models.DateField(blank=False)
-    createAt = models.DateTimeField(default=timezone.now)  # Fix here
+    createdAt = models.DateTimeField(default=timezone.now)  # Fix here
     amount = models.BigIntegerField(blank=False)
     customer = models.ForeignKey(
         Customer,
-        related_name="collection_reminders",
-        on_delete=models.CASCADE,
-        null=True,
-        blank=True,
-    )
-    supplier = models.ForeignKey(
-        Supplier,
         related_name="collection_reminders",
         on_delete=models.CASCADE,
         null=True,

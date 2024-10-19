@@ -93,7 +93,7 @@ class TransactionSerializer(serializers.ModelSerializer):
             "due",
             "extra_amount",
             "description",
-            "date",
+            "createAt",
             "cash_sell",
             "cash_buy",
         ]
@@ -105,7 +105,7 @@ class LendGivenSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = LendGiven
-        fields = ["id", "amount", "date", "description", "customer"]
+        fields = ["id", "amount", "createAt", "description", "customer"]
 
 
 # Borrow Taken Serializer
@@ -114,7 +114,7 @@ class BorrowTakenSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = BorrowTaken
-        fields = ["id", "amount", "date", "description", "customer"]
+        fields = ["id", "amount", "createAt", "description", "customer"]
 
 
 # Deposit Serializer
@@ -123,7 +123,7 @@ class DepositSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Deposit
-        fields = ["id", "amount", "date", "description", "owner"]
+        fields = ["id", "amount", "createAt", "description", "owner"]
 
 
 # Expense Serializer
@@ -132,7 +132,7 @@ class ExpenseSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Expense
-        fields = ["id", "amount", "date", "owner"]
+        fields = ["id", "amount", "createAt", "owner"]
 
 
 # Match Cash Box Serializer
@@ -141,7 +141,7 @@ class MatchCashBoxSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = MatchCashBox
-        fields = ["id", "total_amount", "date", "owner"]
+        fields = ["id", "total_amount", "createAt", "owner"]
 
 
 # Withdraw Serializer
@@ -150,14 +150,18 @@ class WithdrawSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Withdraw
-        fields = ["id", "amount", "date", "description", "owner"]
+        fields = ["id", "amount", "createAt", "description", "owner"]
 
 
 # Collection Reminder Serializer
 class CollectionReminderSerializer(serializers.ModelSerializer):
     customer = CustomerSerializer(read_only=True)
-    supplier = SupplierSerializer(read_only=True)
 
     class Meta:
         model = CollectionReminder
-        fields = ["id", "collection_date", "date", "amount", "customer", "supplier"]
+        fields = [
+            "id",
+            "collection_date",
+            "amount",
+            "customer",
+        ]
