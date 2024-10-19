@@ -8,7 +8,7 @@ class Owner(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     name = models.CharField(max_length=100)
     email = models.EmailField(unique=True)
-    phone = models.CharField(max_length=15, blank=True)
+    phone = models.CharField(max_length=15, blank=True, null=True)
     profile_photo = models.ImageField(upload_to="photos/", blank=True, null=True)
     createdAt = models.DateTimeField(default=timezone.now)  # Fix here
 
@@ -22,7 +22,7 @@ class Customer(models.Model):
     name = models.CharField(max_length=100)
     email = models.EmailField(unique=True)
     phone = models.CharField(
-        max_length=11, blank=True
+        max_length=11, blank=True, null=True
     )  # Make nullable or provide a default
     profile_photo = models.ImageField(upload_to="photos/", blank=True, null=True)
     createdAt = models.DateTimeField(default=timezone.now)  # Fix here
@@ -38,7 +38,7 @@ class Supplier(models.Model):
     name = models.CharField(max_length=100)
     email = models.EmailField(unique=True, max_length=50)
     phone = models.CharField(
-        max_length=11, blank=True
+        max_length=11, blank=True, null=True
     )  # Make nullable or provide a default
     profile_photo = models.ImageField(upload_to="photos/", blank=True, null=True)
     createdAt = models.DateTimeField(default=timezone.now)  # Fix here
@@ -81,19 +81,12 @@ class CashBuy(models.Model):
 # Transaction Model
 class Transaction(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    due = models.BigIntegerField(null=False, blank=False)
-    extra_amount = models.BigIntegerField(null=False, blank=False)
+    due = models.BigIntegerField(null=True, blank=True)
+    extra_amount = models.BigIntegerField(null=True, blank=True)
     description = models.CharField(max_length=500, blank=True, null=True)
     createdAt = models.DateTimeField(default=timezone.now)  # Fix here
-    cash_sell = models.ForeignKey(
+    cashsell = models.ForeignKey(
         CashSell,
-        related_name="transactions",
-        on_delete=models.CASCADE,
-        null=True,
-        blank=True,
-    )
-    cash_buy = models.ForeignKey(
-        CashBuy,
         related_name="transactions",
         on_delete=models.CASCADE,
         null=True,

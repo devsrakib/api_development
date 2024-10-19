@@ -35,7 +35,7 @@ class CustomerSerializer(serializers.ModelSerializer):
             "email",
             "phone",
             "profile_photo",
-            "createAt",
+            "createdAt",
             "owner",
         ]
 
@@ -46,7 +46,7 @@ class SupplierSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Supplier
-        fields = ["id", "name", "email", "phone", "profile_photo", "createAt", "owner"]
+        fields = ["id", "name", "email", "phone", "profile_photo", "createdAt", "owner"]
 
 
 # Cash Sell Serializer
@@ -60,7 +60,6 @@ class CashSellSerializer(serializers.ModelSerializer):
             "sell_amount",
             "collected_amount",
             "description",
-            "createdAt",
             "customer",
         ]
 
@@ -83,8 +82,8 @@ class CashBuySerializer(serializers.ModelSerializer):
 
 # Transaction Serializer
 class TransactionSerializer(serializers.ModelSerializer):
-    cash_sell = CashSellSerializer(read_only=True)
-    cash_buy = CashBuySerializer(read_only=True)
+    # cash_sell = CashSellSerializer(read_only=True)
+    # cash_buy = CashBuySerializer(read_only=True)
 
     class Meta:
         model = Transaction
@@ -93,10 +92,17 @@ class TransactionSerializer(serializers.ModelSerializer):
             "due",
             "extra_amount",
             "description",
-            "createAt",
-            "cash_sell",
-            "cash_buy",
+            "cashsell",
         ]
+
+    def to_representation(self, instance):
+        cashsell = instance.cashsell  #
+        if cashsell:
+            due = cashsell.sell_amount - cashsell.collected_amount
+            extra_amount = 0 if due > 0 else -due
+            instance.due = due
+            instance.extra_amount = extra_amount
+        return super().to_representation(instance)
 
 
 # Lend Given Serializer
@@ -105,7 +111,7 @@ class LendGivenSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = LendGiven
-        fields = ["id", "amount", "createAt", "description", "customer"]
+        fields = ["id", "amount", "createdAt", "description", "customer"]
 
 
 # Borrow Taken Serializer
@@ -114,7 +120,7 @@ class BorrowTakenSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = BorrowTaken
-        fields = ["id", "amount", "createAt", "description", "customer"]
+        fields = ["id", "amount", "createdAt", "description", "customer"]
 
 
 # Deposit Serializer
@@ -123,7 +129,7 @@ class DepositSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Deposit
-        fields = ["id", "amount", "createAt", "description", "owner"]
+        fields = ["id", "amount", "createdAt", "description", "owner"]
 
 
 # Expense Serializer
@@ -132,7 +138,7 @@ class ExpenseSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Expense
-        fields = ["id", "amount", "createAt", "owner"]
+        fields = ["id", "amount", "createdAt", "owner"]
 
 
 # Match Cash Box Serializer
@@ -141,7 +147,7 @@ class MatchCashBoxSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = MatchCashBox
-        fields = ["id", "total_amount", "createAt", "owner"]
+        fields = ["id", "total_amount", "createdAt", "owner"]
 
 
 # Withdraw Serializer
@@ -150,7 +156,7 @@ class WithdrawSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Withdraw
-        fields = ["id", "amount", "createAt", "description", "owner"]
+        fields = ["id", "amount", "createdAt", "description", "owner"]
 
 
 # Collection Reminder Serializer
