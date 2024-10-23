@@ -32,6 +32,8 @@ from .serializers import (
 
 
 # Owner Views
+
+
 class OwnerListCreateView(generics.ListCreateAPIView):
     queryset = Owner.objects.all()
     serializer_class = OwnerSerializer
