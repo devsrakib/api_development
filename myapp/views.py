@@ -1,4 +1,6 @@
-from rest_framework import generics
+from rest_framework import generics, mixins
+from rest_framework import permissions, authentication
+from .permissions import IsStaffEditorPermission
 from .models import (
     Owner,
     Customer,
@@ -34,21 +36,51 @@ from .serializers import (
 # Owner Views
 
 
-class OwnerListCreateView(generics.ListCreateAPIView):
-    queryset = Owner.objects.all()
-    serializer_class = OwnerSerializer
-
-
-class OwnerDetailView(generics.RetrieveUpdateDestroyAPIView):
+class OwnerListCreateView(
+    mixins.ListModelMixin,
+    mixins.RetrieveModelMixin,
+    mixins.CreateModelMixin,
+    generics.GenericAPIView,
+):
     queryset = Owner.objects.all()
     serializer_class = OwnerSerializer
     lookup_field = "id"
+    # authentication_classes = [authentication.SessionAuthentication]
+    # permission_classes = [permissions.IsAdminUser, IsStaffEditorPermission]
+
+    def get(self, request, *args, **kwargs):
+        # if id is not None:
+        #     return self.retrieve(request, *args, **kwargs)
+        return self.list(request, *args, **kwargs)
+
+    def post(self, request, *args, **kwargs):
+        return self.create(request, *args, **kwargs)
+
+    def delete(self, request, *args, **kwargs):
+        return self.destroy(request, *args, **kwargs)
+
+    # def perform_create(self, serializer):
+    #     name = serializer.validated_data.get("name")
+    #     email = serializer.validated_data.get("email")
+    #     if email is None:
+    #         email = name
+    #     serializer.save(email=email)
+
+
+create_retrieve_owner = OwnerListCreateView.as_view()
 
 
 # Customer Views
 class CustomerListCreateView(generics.ListCreateAPIView):
     queryset = Customer.objects.all()
     serializer_class = CustomerSerializer
+
+    # def perform_create(self, serializer):
+    #     name = serializer.validated_data.get("name")
+    #     phone = serializer.validated_data.get("phone") or None
+    #     if phone is None:
+    #         phone = name
+    #     serializer.save(phone=phone)
 
 
 class CustomerDetailView(generics.RetrieveUpdateDestroyAPIView):
@@ -127,6 +159,9 @@ class BorrowTakenDetailView(generics.RetrieveUpdateDestroyAPIView):
     queryset = BorrowTaken.objects.all()
     serializer_class = BorrowTakenSerializer
     lookup_field = "id"
+
+    # def perform_destroy(self, instance):
+    #     return super().perform_destroy(instance)
 
 
 # Deposit Views

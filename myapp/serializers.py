@@ -25,7 +25,7 @@ class OwnerSerializer(serializers.ModelSerializer):
 
 # Customer Serializer
 class CustomerSerializer(serializers.ModelSerializer):
-    owner = OwnerSerializer(read_only=True)
+    # owner = OwnerSerializer(read_only=True)
     # c_owner = serializers.SerializerMethodField(read_only=True)
 
     class Meta:

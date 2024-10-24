@@ -1,7 +1,6 @@
 from django.urls import path
 from .views import (
-    OwnerListCreateView,
-    OwnerDetailView,
+    create_retrieve_owner,
     CustomerListCreateView,
     CustomerDetailView,
     SupplierListCreateView,
@@ -30,8 +29,8 @@ from .views import (
 
 urlpatterns = [
     # Owner URLs
-    path("owners/", OwnerListCreateView.as_view(), name="owner-list-create"),
-    path("owners/<uuid:id>/", OwnerDetailView.as_view(), name="owner-detail"),
+    path("owners/", create_retrieve_owner, name="owner-list-create"),
+    path("owners/<uuid:id>/", create_retrieve_owner, name="owner-detail"),
     # Customer URLs
     path("customers/", CustomerListCreateView.as_view(), name="customer-list-create"),
     path("customers/<uuid:id>/", CustomerDetailView.as_view(), name="customer-detail"),

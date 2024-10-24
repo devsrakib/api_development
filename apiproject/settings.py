@@ -26,7 +26,13 @@ SECRET_KEY = "django-insecure-2brjg+p!khzc6gb14*i*r&meptkcwg05ma*5@z1rawsgm(1tlj
 DEBUG = True
 
 ALLOWED_HOSTS = []
-
+CORS_ALLOW_ALL_ORIGINS = True
+CORS_ALLOWED_ORIGINS = [
+    "http://192.168.1.178:8081",
+    "http://localhost:8081",  # React Native emulator
+    # "http://10.0.2.2:8081",  # Android emulator
+    # "http://192.168.1.100:8081",  # If you're using React Native
+]
 
 # Application definition
 
@@ -39,8 +45,8 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "myapp",
     "rest_framework",
-    "rest_framework.authtoken",
     "corsheaders",
+    "rest_framework.authtoken",
 ]
 
 MIDDLEWARE = [
@@ -52,11 +58,10 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
-    "corsheaders.middleware.CorsMiddleware",
 ]
 
 ROOT_URLCONF = "apiproject.urls"
-CORS_ALLOW_ALL_ORIGINS = True
+
 
 TEMPLATES = [
     {
@@ -149,14 +154,13 @@ REST_FRAMEWORK = {
         "rest_framework.renderers.BrowsableAPIRenderer",
         # "rest_framework.authentication.TokenAuthentication",
     ),
+    "DEFAULT_PERMISSION_CLASSES": [
+        "rest_framework.permissions.AllowAny",  # Open to all
+    ],
     "DEFAULT_PAGINATION_CLASS": "rest_framework.pagination.PageNumberPagination",
     "PAGE_SIZE": 10,
 }
 
-CORS_ALLOWED_ORIGINS = [
-    "http://localhost:8081",  # React Native emulator
-    "http://10.0.2.2:8081",  # Android emulator
-    "http://192.168.1.100:8081",  # If you're using React Native
-]
+ALLOWED_HOSTS = ["127.0.0.1", "localhost"]
 
 # ALLOWED_HOSTS = ["http://127.0.01:8000/"]
