@@ -29,7 +29,8 @@ ALLOWED_HOSTS = []
 CORS_ALLOW_ALL_ORIGINS = True
 CORS_ALLOWED_ORIGINS = [
     "http://192.168.1.178:8081",
-    "http://localhost:8081",  # React Native emulator
+    "http://localhost:8081",
+    "https://localhost:8081",  # React Native emulator
     # "http://10.0.2.2:8081",  # Android emulator
     # "http://192.168.1.100:8081",  # If you're using React Native
 ]
@@ -61,6 +62,7 @@ MIDDLEWARE = [
 ]
 
 ROOT_URLCONF = "apiproject.urls"
+CORS_URLS_REGEX = r"^/myapp/.*"
 
 
 TEMPLATES = [
@@ -161,6 +163,6 @@ REST_FRAMEWORK = {
     "PAGE_SIZE": 10,
 }
 
-ALLOWED_HOSTS = ["127.0.0.1", "localhost"]
+ALLOWED_HOSTS = ["127.0.0.1", "localhost", "10.0.2.2"]
 
 # ALLOWED_HOSTS = ["http://127.0.01:8000/"]
